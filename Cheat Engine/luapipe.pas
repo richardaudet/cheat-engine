@@ -224,7 +224,12 @@ begin
     else
     begin
      // sleep(10);
-      r:=WaitForSingleObject(o^.hEvent, ifthen<DWORD>(ftimeout=0, 1000, ftimeout));
+
+      if ftimeout=0 then
+        r:=WaitForSingleObject(o^.hEvent, 1000)
+      else
+        r:=WaitForSingleObject(o^.hEvent, ftimeout);
+
       case r of
         WAIT_OBJECT_0, WAIT_TIMEOUT: fconnected:=true;
         else

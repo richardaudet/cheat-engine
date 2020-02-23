@@ -2187,7 +2187,13 @@ begin
       //32 bit: check if it has noexecute support
       if assigned(GetProcessDEPPolicy) and assigned(SetProcessDEPPolicy) then
       begin
-        ph:=OpenProcess(ifthen<dword>(GetSystemType<=6,$1f0fff, process_all_access),false,processid);    //the debuggerhandle does not get this properly
+
+        //the debuggerhandle does not get this properly
+        if GetSystemType <=6 then
+          ph:=OpenProcess($1f0fff,false,processid)
+        else
+          ph:=OpenProcess(process_all_access,false,processid);
+
         try
           if GetProcessDEPPolicy(ph, @depflags, @perm) then
           begin

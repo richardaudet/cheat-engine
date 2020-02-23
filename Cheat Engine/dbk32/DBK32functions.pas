@@ -1901,7 +1901,10 @@ begin
   //OutputDebugString('NtOpenProcess hook');
   if ((hdevice<>INVALID_HANDLE_VALUE) and (clientid<>nil)) and (clientid^.processid<>GetCurrentProcessId) then
   begin
-    h:=OP(ifthen<dword>(GetSystemType<=6,$1f0fff, process_all_access),true,clientid^.processid);
+    if GetSystemType <= 6 then
+      h:=OP($1f0fff,true,clientid^.processid)
+    else
+      h:=OP(process_all_access,true,clientid^.processid);
     if h<>0 then
     begin
       result:=0;
@@ -2999,7 +3002,11 @@ begin
       result:=true;
       SDTShadow:=res;
     end;
-    ownprocess:=OP(ifthen<dword>(GetSystemType<=6,$1f0fff, process_all_access),false,getcurrentprocessid);
+    if GetSystemType <= 6 then
+      ownprocess:=OP($1f0fff,false,getcurrentprocessid)
+    else
+      ownprocess:=OP(process_all_access,false,getcurrentprocessid);
+
   end;
 end;
 
